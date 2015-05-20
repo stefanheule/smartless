@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # works like less, but will only actually invoke less if there are more than
 # a certain number of lines.
