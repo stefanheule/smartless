@@ -2,7 +2,7 @@
 
 # ------------------------------------------------------------------------------
 
-# smartless - smart pager similar to less, but better
+# smartless - a pager similar to less, but smarter
 #
 # works like the pager 'less', but does not enter the pager mode if the
 # document is short
