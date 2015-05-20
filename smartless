@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# works like less, but will only actually invoke less if there are more than
+# a certain number of lines.
+# unlike less -F, however, scrolling in less will still work
+
+# inspired by: http://unix.stackexchange.com/questions/107315/less-quit-if-one-screen-without-no-init
+
+# if a file name is passed, read it
+isfile=0
+file=""
+args=""
+for var in "$@"
+do
+  # ignore less arguments
+  if [[ ! $var = -* ]] && [[ ! $var = +* ]]; then
+    isfile=1
+    file=$var
+  else
+    args="$args $var"
+  fi
+done
+if (( $isfile == 1 )); then
+  # cat file, and pass remaining arguments to myself
+  me=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)/`basename "${BASH_SOURCE[0]}"`
+  cat "$file" | $me $args
+  exit $?
+fi
+
+# number of lines to show before switching to less
+nlines=15 # could also be $LINES
+
+n=0
+lines=
+newline='
+'
+
+# read and display enough lines to fill most of the terminal (nlines many lines)
+while [ $n -lt $nlines ] && IFS= read -r line; do
+  if [[ $n -eq 0 ]]; then
+    lines="$line"
+  else
+    lines="$lines$newline$line"
+  fi
+  printf '%s\n' "$line" 1>&2
+  n=$((n + 1))
+done
+
+# if the input is longer, run the pager
+if IFS= read -r line; then
+  echo -e "\033[38;5;2m... (more shown in less)\033[0m" 1>&2
+  { printf '%s\n%s\n' "$lines" "$line"; exec cat; } | exec less -iR --quiet "$@"
+fi
