@@ -26,6 +26,15 @@
 
 # ------------------------------------------------------------------------------
 
+# number of lines to directly display before entering  the pager
+[ -z "$SMARTLESS_NUM_LINES" ] && SMARTLESS_NUM_LINES=15
+
+# the pager to be used
+[ -z "$SMARTLESS_PAGER" ] && SMARTLESS_PAGER='less'
+
+# the default arguments to the pager
+[ -z "$SMARTLESS_PAGER_ARGUMENTS" ] && SMARTLESS_PAGER_ARGUMENTS='-iR --quiet'
+
 # if a file name is passed, read it
 isfile=0
 file=""
@@ -48,7 +57,7 @@ if (( $isfile == 1 )); then
 fi
 
 # number of lines to show before switching to less
-nlines=15 # could also be $LINES
+nlines=$SMARTLESS_NUM_LINES
 
 n=0
 lines=
@@ -68,6 +77,6 @@ done
 
 # if the input is longer, run the pager
 if IFS= read -r line; then
-  echo -e "\033[38;5;2m... (more shown in less)\033[0m" 1>&2
-  { printf '%s\n%s\n' "$lines" "$line"; exec cat; } | exec less -iR --quiet "$@"
+  echo -e "\033[38;5;2m... (more shown in $SMARTLESS_PAGER)\033[0m" 1>&2
+  { printf '%s\n%s\n' "$lines" "$line"; exec cat; } | exec $SMARTLESS_PAGER $SMARTLESS_PAGER_ARGUMENTS "$@"
 fi
