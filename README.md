@@ -45,6 +45,10 @@ Several optional environment variables control `smartless`.  These are described
 
 Pull-request to improve `smartless` are welcomed.
 
+## Credits
+
+This project was originally based on [an answer on StackExchange](http://unix.stackexchange.com/questions/107315/), but has changed significantly since.
+
 ## License
 
 Copyright 2015 Stefan Heule
