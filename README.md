@@ -1,6 +1,6 @@
 # smartless
 
-`smartless` is a pager that behaves just like `less`, but will show the file (or output) directly to the terminal if it is short enough (15 lines by default).  For longer files, the 
+`smartless` is a pager that behaves just like `less`, but will show the file (or output) directly to the terminal if it is short enough (15 lines by default).  For longer files, the pager is still invoked.
 
 ## Prerequisites
 
