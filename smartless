@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# ------------------------------------------------------------------------------
-
 # smartless - a pager similar to less, but smarter
 #
 # works like the pager 'less', but does not enter the pager mode if the
