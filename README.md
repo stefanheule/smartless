@@ -24,7 +24,7 @@ To replace less completely, it is possible to define an alias in most shells.  F
 
     alias less='/path/to/smartless'
 
-It can be useful to define an additional alias for jumping directly to the end of the input.  I like to call that alias `more`, but other more descriptive names are possible:
+It can be useful to define an additional alias for jumping directly to the end of the input.  I like to call that alias `more`, but other more descriptive names are imaginable:
 
     alias more='/path/to/smartless +G'
 
