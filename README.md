@@ -2,6 +2,10 @@
 
 `smartless` is a pager that behaves just like `less`, but will show the file (or output) directly to the terminal if it is short enough (15 lines by default).  For longer files, the pager is still invoked.
 
+Here is a small demo:
+
+![smartless demo](http://stefanheule.com/blog/img/posts/smartless.gif)
+
 ## Prerequisites
 
 `smartless` requires a reasonable resent version of `bash`, and a pager like `less`.  Both are available by default on most unix systems.
