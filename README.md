@@ -14,11 +14,15 @@ Here is a small demo, and I have also written a [blog post](http://stefanheule.c
 
 `smartless` is designed as a drop-in replacement for `less`.  For instance, to view the output of a command `cmd`, use
 
-    cmd | smartless
+```bash
+cmd | smartless
+```
 
 It is also possible to pass a filename directly:
 
-    smartless file.txt
+```bash
+smartless file.txt
+```
 
 Finally, all other parameters are forwarded to the pager.  For instance, `smartless +G` will jump to the end of the file in `less`.
 
@@ -26,24 +30,30 @@ Finally, all other parameters are forwarded to the pager.  For instance, `smartl
 
 To replace less completely, it is possible to define an alias in most shells.  For bash and zsh, the following line will allow the usage of `smartless` when typing `less`.
 
-    alias less='/path/to/smartless'
+```bash
+alias less='/path/to/smartless'
+```
 
 It can be useful to define an additional alias for jumping directly to the end of the input.  I like to call that alias `more`, but other more descriptive names are imaginable:
 
-    alias more='/path/to/smartless +G'
+```bash
+alias more='/path/to/smartless +G'
+```
 
 ## Configuration
 
 Several optional environment variables control `smartless`.  These are described here, including their default values.
 
-    # number of lines to directly display before entering  the pager
-    SMARTLESS_NUM_LINES=15
-    
-    # the pager to be used
-    SMARTLESS_PAGER='less'
-    
-    # the default arguments to the pager
-    SMARTLESS_PAGER_ARGUMENTS='-iR --quiet'
+```bash
+# number of lines to directly display before entering  the pager
+SMARTLESS_NUM_LINES=15
+
+# the pager to be used
+SMARTLESS_PAGER='less'
+
+# the default arguments to the pager
+SMARTLESS_PAGER_ARGUMENTS='-iR --quiet'
+```
 
 ## Contributing
 
