@@ -45,8 +45,8 @@ alias more='/path/to/smartless +G'
 Several optional environment variables control `smartless`.  These are described here, including their default values.
 
 ```bash
-# number of lines to directly display before entering  the pager
-SMARTLESS_NUM_LINES=15
+# number of lines to directly display before entering the pager
+SMARTLESS_NUM_LINES= # (terminal height - 5) or 15, if terminal height cannot be discovered automatically
 
 # the pager to be used
 SMARTLESS_PAGER='less'
