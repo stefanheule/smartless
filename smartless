@@ -44,9 +44,12 @@ isfile=0
 file=""
 args=""
 nextisarg=0
+pattern=""
+storeargat="x"
 for var in "$@"; do
   if (( $nextisarg == 1 )); then
     nextisarg=0
+    eval $storeargat="$var"
     args="$args $var"
     continue
   fi
@@ -71,6 +74,19 @@ for var in "$@"; do
        [[ $var == "-#" ]]; then
       nextisarg=1
     fi
+
+    # detect pattern argument
+    if [[ $var == "-p" ]]; then
+      storeargat="pattern"
+    else
+      storeargat="x"
+    fi
+    if [[ $var == --pattern=* ]]; then
+      pattern=${var:10}
+    elif [[ $var == -p* ]]; then
+      pattern=${var:2}
+    fi
+
     args="$args $var"
   fi
 done
@@ -96,7 +112,15 @@ while [ $n -lt $nlines ] && IFS= read -r line; do
   else
     lines="$lines$newline$line"
   fi
-  printf '%s\n' "$line" 1>&2
+  if [[ $line == "" ]] || [[ $pattern == "" ]]; then
+    printf '%s\n' "$line" 1>&2
+  else
+    printf '%s\n' "$line" | grep $pattern --color=always 1>&2
+    if (( $? == 1 )); then
+      # no match, output plain line
+      printf '%s\n' "$line" 1>&2
+    fi
+  fi
   n=$((n + 1))
 done
 
