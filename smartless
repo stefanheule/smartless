@@ -43,13 +43,34 @@ fi
 isfile=0
 file=""
 args=""
-for var in "$@"
-do
+nextisarg=0
+for var in "$@"; do
+  if (( $nextisarg == 1 )); then
+    nextisarg=0
+    args="$args $var"
+    continue
+  fi
   # ignore less arguments
   if [[ ! $var = -* ]] && [[ ! $var = +* ]]; then
     isfile=1
     file=$var
   else
+    if [[ $var == "-b" ]] ||
+       [[ $var == "-h" ]] ||
+       [[ $var == "-j" ]] ||
+       [[ $var == "-k" ]] ||
+       [[ $var == "-o" ]] ||
+       [[ $var == "-O" ]] ||
+       [[ $var == "-p" ]] ||
+       [[ $var == "-P" ]] ||
+       [[ $var == "-t" ]] ||
+       [[ $var == "-T" ]] ||
+       [[ $var == "-x" ]] ||
+       [[ $var == "-y" ]] ||
+       [[ $var == "-z" ]] ||
+       [[ $var == "-#" ]]; then
+      nextisarg=1
+    fi
     args="$args $var"
   fi
 done
