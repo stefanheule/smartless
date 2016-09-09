@@ -16,10 +16,6 @@ The simplest way to install the script is to download it directly into /usr/loca
 
     curl https://raw.githubusercontent.com/stefanheule/smartless/master/smartless -o /usr/local/bin/smartless
     chmod +x /usr/local/bin/smartless # <-- mark it as executable
-    
-In case you want to override the current less to always use smartless:
-
-    alias less=smartless
 
 ## Usage
 
@@ -68,7 +64,7 @@ SMARTLESS_PAGER_ARGUMENTS='-iR --quiet'
 
 ## Contributing
 
-Pull-request to improve `smartless` are welcomed.
+Pull-requests to improve `smartless` are welcomed.
 
 ## Credits
 
