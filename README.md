@@ -10,6 +10,17 @@ Here is a small demo, and I have also written a [blog post](http://stefanheule.c
 
 `smartless` requires a reasonable resent version of `bash`, and a pager like `less`.  Both are available by default on most unix systems.
 
+## Installation
+
+The simplest way to install the script is to download it directly into /usr/local/bin:
+
+    curl https://raw.githubusercontent.com/stefanheule/smartless/master/smartless -o /usr/local/bin/smartless
+    chmod +x /usr/local/bin/smartless # <-- mark it as executable
+    
+In case you want to override the current less to always use smartless:
+
+    alias less=smartless
+
 ## Usage
 
 `smartless` is designed as a drop-in replacement for `less`.  For instance, to view the output of a command `cmd`, use
