@@ -59,7 +59,7 @@ SMARTLESS_NUM_LINES= # (terminal height - 5) or 15, if terminal height cannot be
 SMARTLESS_PAGER='less'
 
 # the default arguments to the pager
-SMARTLESS_PAGER_ARGUMENTS='-iR --quiet'
+SMARTLESS_PAGER_ARGUMENTS='-iR'
 ```
 
 ## Contributing

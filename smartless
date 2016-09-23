@@ -37,7 +37,7 @@ fi
 [ -z "$SMARTLESS_PAGER" ] && SMARTLESS_PAGER='less'
 
 # the default arguments to the pager
-[ -z "$SMARTLESS_PAGER_ARGUMENTS" ] && SMARTLESS_PAGER_ARGUMENTS='-iR --quiet'
+[ -z "$SMARTLESS_PAGER_ARGUMENTS" ] && SMARTLESS_PAGER_ARGUMENTS='-iR'
 
 # if a file name is passed, read it
 isfile=0
