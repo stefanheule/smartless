@@ -17,6 +17,13 @@ The simplest way to install the script is to download it directly into /usr/loca
     curl https://raw.githubusercontent.com/stefanheule/smartless/master/smartless -o /usr/local/bin/smartless
     chmod +x /usr/local/bin/smartless # <-- mark it as executable
 
+Alternatively, you can clone the git repository, which allows easy updating by doing `git pull`:
+
+    git clone https://github.com/stefanheule/smartless.git
+    ln -s smartless/smartless /usr/local/bin/smartless # <-- make it available system-wide as "smartless"
+    
+See also the [aliases](#aliases) section below.
+
 ## Usage
 
 `smartless` is designed as a drop-in replacement for `less`.  For instance, to view the output of a command `cmd`, use
