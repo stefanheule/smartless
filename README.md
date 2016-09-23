@@ -22,7 +22,7 @@ Alternatively, you can clone the git repository, which allows easy updating by d
     git clone https://github.com/stefanheule/smartless.git
     ln -s smartless/smartless /usr/local/bin/smartless # <-- make it available system-wide as "smartless"
     
-See also the [aliases](#Aliases) section below.
+See also the [aliases](#aliases) section below.
 
 ## Usage
 
