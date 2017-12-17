@@ -24,13 +24,29 @@
 
 # ------------------------------------------------------------------------------
 
-# number of lines to directly display before entering  the pager
+# Unit test ideas:
+# * All TODO: ComponentTest notes
+# * As git-pager with small and screenful of output
+# * File with small and screenful of output, with and without \n at EOF
+
+# '-H' (one of the few arguments that less does not accept) or
+# --hold-pollute (coming from -H):
+# Output to half the screen instead of filling it up
+#
+# Does not work with SMARTLESS_NUM_LINES set
+if [[ "$*" =~ -[a-zA-Z]*H || "$*" =~ --hold-pollute && -z "${SMARTLESS_NUM_LINES}" ]] ; then
+  SMARTLESS_HOLD_POLLUTE=2
+else
+  SMARTLESS_HOLD_POLLUTE=1
+fi
+
+# number of lines to directly display before entering the pager
 if [ -z "${SMARTLESS_NUM_LINES}" ] ; then
-    # default to 5 lines less than the screen height, if it can be discovered
-    SMARTLESS_NUM_LINES="$(tput lines)"
-    SMARTLESS_NUM_LINES="${SMARTLESS_NUM_LINES:+$(( SMARTLESS_NUM_LINES - 5 ))}"
-    # fall back to 15 lines
-    SMARTLESS_NUM_LINES="${SMARTLESS_NUM_LINES:-15}"
+  # default to 5 lines less than the screen height, if it can be discovered
+  SMARTLESS_NUM_LINES="$(tput lines)"
+  SMARTLESS_NUM_LINES="${SMARTLESS_NUM_LINES:+$(( (SMARTLESS_NUM_LINES - 5) / SMARTLESS_HOLD_POLLUTE ))}"
+  # fall back to 15 lines
+  SMARTLESS_NUM_LINES="${SMARTLESS_NUM_LINES:-15}"
 fi
 
 # the pager to be used
@@ -42,12 +58,12 @@ fi
 # if a file name is passed, read it
 isfile=0
 file=""
-args=""
+args=()
 nextisarg=0
-for var in "$@"; do
+for var ; do
   if (( nextisarg == 1 )); then
     nextisarg=0
-    args="$args $var"
+    args+=("${var}")
     continue
   fi
   # ignore less arguments
@@ -71,14 +87,25 @@ for var in "$@"; do
        [[ $var == "-#" ]]; then
       nextisarg=1
     fi
-    args="$args $var"
+    args=("$var")
   fi
 done
 if (( isfile == 1 )); then
-  # cat file, and pass remaining arguments to myself
-  me="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
-  cat "$file" | $me $args
+  "${BASH_SOURCE[0]}" "${args[@]}" < "${file}"
   exit $?
+fi
+
+# Cleanup -H or --hold-pollute
+if [ "${SMARTLESS_HOLD_POLLUTE}" -ne 2 ] ; then
+  ARGS=("${@}")
+else
+  ARGS=()
+  for arg ; do
+    arg=${arg//H/}
+    arg=${arg//--hold-pollute/}
+    [ -z "${arg//-/}" ] && continue
+    ARGS+=("${arg}")
+  done
 fi
 
 # number of lines to show before switching to less
@@ -86,22 +113,29 @@ nlines=$SMARTLESS_NUM_LINES
 
 n=0
 lines=
-newline='
-'
+newline=$'\n'
 
 # read and display enough lines to fill most of the terminal (nlines many lines)
-while [ $n -lt "$nlines" ] && IFS= read -r line; do
-  if [[ $n -eq 0 ]]; then
-    lines="$line"
-  else
-    lines="$lines$newline$line"
-  fi
-  printf '%s\n' "$line" 1>&2
+while [ $n -lt "${nlines}" ] && IFS= read -r line; do
+  lines="${lines}${line}${newline}"
+  line=''
   n=$((n + 1))
 done
 
+# For input with no trailing `\nEOF`
+# TODO: ComponentTest: `printf '1' | smartless`
+if [ -n "${line}" ]; then
+  lines="${lines}${line}"
+fi
+
 # if the input is longer, run the pager
 if IFS= read -r line; then
-  echo -e "\\033[38;5;2m... (more shown in $SMARTLESS_PAGER)\\033[0m" 1>&2
-  { printf '%s\n%s\n' "$lines" "$line"; exec cat; } | exec $SMARTLESS_PAGER $SMARTLESS_PAGER_ARGUMENTS "$@"
+  {
+    printf '%s' "${lines}"
+    printf '\033[38;5;2m... (more shown in %s)\033[0m\n' "${SMARTLESS_PAGER}"
+  } >&2
+  { printf '%s%s\n' "${lines}" "${line}"; exec cat; } | exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" "${ARGS[@]}"
+else
+  # TODO: ComponentTest: `printf '1\n2\n3' | smartless`
+  printf '%s' "${lines}"
 fi
