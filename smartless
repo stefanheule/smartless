@@ -45,7 +45,7 @@ file=""
 args=""
 nextisarg=0
 for var in "$@"; do
-  if (( $nextisarg == 1 )); then
+  if (( nextisarg == 1 )); then
     nextisarg=0
     args="$args $var"
     continue
@@ -74,9 +74,9 @@ for var in "$@"; do
     args="$args $var"
   fi
 done
-if (( $isfile == 1 )); then
+if (( isfile == 1 )); then
   # cat file, and pass remaining arguments to myself
-  me=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)/`basename "${BASH_SOURCE[0]}"`
+  me="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
   cat "$file" | $me $args
   exit $?
 fi
@@ -90,7 +90,7 @@ newline='
 '
 
 # read and display enough lines to fill most of the terminal (nlines many lines)
-while [ $n -lt $nlines ] && IFS= read -r line; do
+while [ $n -lt "$nlines" ] && IFS= read -r line; do
   if [[ $n -eq 0 ]]; then
     lines="$line"
   else
@@ -102,6 +102,6 @@ done
 
 # if the input is longer, run the pager
 if IFS= read -r line; then
-  echo -e "\033[38;5;2m... (more shown in $SMARTLESS_PAGER)\033[0m" 1>&2
+  echo -e "\\033[38;5;2m... (more shown in $SMARTLESS_PAGER)\\033[0m" 1>&2
   { printf '%s\n%s\n' "$lines" "$line"; exec cat; } | exec $SMARTLESS_PAGER $SMARTLESS_PAGER_ARGUMENTS "$@"
 fi
