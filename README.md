@@ -20,7 +20,7 @@ The simplest way to install the script is to download it directly into /usr/loca
 Alternatively, you can clone the git repository, which allows easy updating by doing `git pull`:
 
     git clone https://github.com/stefanheule/smartless.git
-    ln -s smartless/smartless /usr/local/bin/smartless # <-- make it available system-wide as "smartless"
+    ln -s $PWD/smartless/smartless /usr/local/bin/smartless # <-- make it available system-wide as "smartless"
     
 See also the [aliases](#aliases) section below.
 
