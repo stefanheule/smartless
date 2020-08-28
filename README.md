@@ -76,6 +76,9 @@ SMARTLESS_PAGER_ARGUMENTS='-iR'
 # 1: prompt partial text only
 # 2: partial text + more... text
 SMARTLESS_PROMPT_PAGER=2
+
+# ... more in pager prompt color (set empty for no color)
+SMARTLESS_PROMPT_COLOR="\033[38;5;2m"
 ```
 
 ## Contributing

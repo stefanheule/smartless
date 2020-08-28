@@ -62,6 +62,7 @@ fi
 [ -z "${SMARTLESS_PROMPT_PAGER}" ] && SMARTLESS_PROMPT_PAGER=2
 
 # Prompt highlighting of messages
+# TODO: SMARTLESS_PROMPT_COLOR= bash -c 'git log' gives no color
 [ -z "${SMARTLESS_PROMPT_COLOR+x}" ] && SMARTLESS_PROMPT_COLOR="\033[38;5;2m"
 
 # if a file name is passed, read it
@@ -170,7 +171,7 @@ fi
 if IFS= read -r line; then
   {
     [ "${SMARTLESS_PROMPT_PAGER}" -ge 1 ] && printf '%s' "${lines}"
-    [ "${SMARTLESS_PROMPT_PAGER}" -ge 2 ] && printf '\033[38;5;2m... (more shown in %s)\033[0m\n' "${SMARTLESS_PAGER}"
+    [ "${SMARTLESS_PROMPT_PAGER}" -ge 2 ] && printf "%b... (more shown in %s)%b\n" "${SMARTLESS_PROMPT_COLOR}" "${SMARTLESS_PAGER}" "${SMARTLESS_PROMPT_COLOR:+\033[0m}"
   } >&2
   { printf '%s%s\n' "${lines}" "${line}"; exec cat; } | exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" "${ARGS[@]}"
 else
