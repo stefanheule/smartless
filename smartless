@@ -98,9 +98,9 @@ done
 
 # if more than one file provided on cmdline, revert to original less ...
 if (( isfile > 1 )); then
-    exec less $@
+    exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" $@
 elif (( haspattern == 1 )); then
-    exec less $@
+    exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" $@
 fi
 
 if (( isfile == 1 )); then
