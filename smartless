@@ -60,6 +60,7 @@ isfile=0
 file=""
 args=()
 nextisarg=0
+haspattern=0
 for var ; do
   if (( nextisarg == 1 )); then
     nextisarg=0
@@ -71,6 +72,10 @@ for var ; do
     ((isfile++))
     file=$var
   else
+    if [[ $var == "-p" ]] ||
+       [[ $var == "--pattern" ]]; then
+      haspattern=1
+    fi
     if [[ $var == "-b" ]] ||
        [[ $var == "-h" ]] ||
        [[ $var == "-j" ]] ||
@@ -93,6 +98,8 @@ done
 
 # if more than one file provided on cmdline, revert to original less ...
 if (( isfile > 1 )); then
+    exec less $@
+elif (( haspattern == 1 )); then
     exec less $@
 fi
 
