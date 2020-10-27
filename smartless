@@ -68,7 +68,7 @@ for var ; do
   fi
   # ignore less arguments
   if [[ ! $var = -* ]] && [[ ! $var = +* ]]; then
-    isfile=1
+    ((isfile++))
     file=$var
   else
     if [[ $var == "-b" ]] ||
@@ -90,9 +90,22 @@ for var ; do
     args=("$var")
   fi
 done
+
+# if more than one file provided on cmdline, revert to original less ...
+if (( isfile > 1 )); then
+    exec less $@
+fi
+
 if (( isfile == 1 )); then
-  "${BASH_SOURCE[0]}" "${args[@]}" < "${file}"
-  exit $?
+  # if LESSOPEN is defined then try to use it ...
+  if [[ -n "$LESSOPEN" ]]; then
+    lpcmd=$(echo $LESSOPEN | sed 's/ %s//' | sed 's/|-/|/' | sed 's/||/|/' | awk -F\| '{print $2}')
+    ${lpcmd} ${file} | "${BASH_SOURCE[0]}" "${args[@]}"
+    exit $?
+  else
+    "${BASH_SOURCE[0]}" "${args[@]}" < "${file}"
+    exit $?
+  fi
 fi
 
 # Cleanup -H or --hold-pollute
