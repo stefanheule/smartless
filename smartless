@@ -103,6 +103,15 @@ elif (( haspattern == 1 )); then
     exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" $@
 fi
 
+# if stdout is not a terminal its probably been redirected, so skip pager ...
+if [ ! -t 1 ] ; then
+    if (( isfile == 1 )); then
+        exec cat $file
+    else
+        exec cat
+    fi
+fi
+
 if (( isfile == 1 )); then
   # if LESSOPEN is defined then try to use it ...
   if [[ -n "$LESSOPEN" ]]; then
