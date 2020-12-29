@@ -50,10 +50,29 @@ if [ -z "${SMARTLESS_NUM_LINES}" ] ; then
 fi
 
 # the pager to be used
-[ -z "$SMARTLESS_PAGER" ] && SMARTLESS_PAGER='less'
+[ -z "${SMARTLESS_PAGER}" ] && SMARTLESS_PAGER='less'
 
 # the default arguments to the pager
-[ -z "$SMARTLESS_PAGER_ARGUMENTS" ] && SMARTLESS_PAGER_ARGUMENTS='-iR'
+[ -z "${SMARTLESS_PAGER_ARGUMENTS}" ] && SMARTLESS_PAGER_ARGUMENTS='-iR'
+
+# Prompt text when switching to pager:
+# 0: no prompt
+# 1: prompt partial text only
+# 2: partial text + more... text
+[ -z "${SMARTLESS_PROMPT_PAGER}" ] && SMARTLESS_PROMPT_PAGER=2
+
+# Prompt highlighting of messages
+# TODO: SMARTLESS_PROMPT_COLOR= bash -c 'git log' gives no color
+[ -z "${SMARTLESS_PROMPT_COLOR+x}" ] && SMARTLESS_PROMPT_COLOR="\033[38;5;2m"
+
+# Partial output FD
+# TODO: Test:
+# SMARTLESS_PARTIAL_OUTPUT_FD=2 bash -c 'git log' 2>/dev/null is empty
+# SMARTLESS_PARTIAL_OUTPUT_FD=1 bash -c 'git log' 2>/dev/null gives text
+case "${SMARTLESS_PARTIAL_OUTPUT_FD}" in
+  ''|*[!0-9]*) SMARTLESS_PARTIAL_OUTPUT_FD=2 ;;
+            *) :;;
+esac
 
 # if a file name is passed, read it
 isfile=0
@@ -70,7 +89,7 @@ for var ; do
   # ignore less arguments
   if [[ ! $var = -* ]] && [[ ! $var = +* ]]; then
     ((isfile++))
-    file=$var
+    file="$var"
   else
     if [[ $var == "-p" ]] ||
        [[ $var == "--pattern" ]]; then
@@ -98,15 +117,15 @@ done
 
 # if more than one file provided on cmdline, revert to original less ...
 if (( isfile > 1 )); then
-    exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" $@
+  exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" "$@"
 elif (( haspattern == 1 )); then
-    exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" $@
+  exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" "$@"
 fi
 
 # if stdout is not a terminal its probably been redirected, so skip pager ...
 if [ ! -t 1 ] ; then
     if (( isfile == 1 )); then
-        exec cat $file
+        exec cat "$file"
     else
         exec cat
     fi
@@ -114,9 +133,9 @@ fi
 
 if (( isfile == 1 )); then
   # if LESSOPEN is defined then try to use it ...
-  if [[ -n "$LESSOPEN" ]]; then
-    lpcmd=$(echo $LESSOPEN | sed 's/ %s//' | sed 's/|-/|/' | sed 's/||/|/' | awk -F\| '{print $2}')
-    ${lpcmd} ${file} | "${BASH_SOURCE[0]}" "${args[@]}"
+  if [[ -n "${LESSOPEN}" ]]; then
+    lpcmd=$(echo "${LESSOPEN}" | sed 's/ %s//' | sed 's/|-/|/' | sed 's/||/|/' | awk -F\| '{print $2}')
+    ${lpcmd} "${file}" | "${BASH_SOURCE[0]}" "${args[@]}"
     exit $?
   else
     "${BASH_SOURCE[0]}" "${args[@]}" < "${file}"
@@ -160,9 +179,9 @@ fi
 # if the input is longer, run the pager
 if IFS= read -r line; then
   {
-    printf '%s' "${lines}"
-    printf '\033[38;5;2m... (more shown in %s)\033[0m\n' "${SMARTLESS_PAGER}"
-  } >&2
+    [ "${SMARTLESS_PROMPT_PAGER}" -ge 1 ] && printf '%s' "${lines}"
+    [ "${SMARTLESS_PROMPT_PAGER}" -ge 2 ] && printf "%b... (more shown in %s)%b\n" "${SMARTLESS_PROMPT_COLOR}" "${SMARTLESS_PAGER}" "${SMARTLESS_PROMPT_COLOR:+\033[0m}"
+  } >&"${SMARTLESS_PARTIAL_OUTPUT_FD}"
   { printf '%s%s\n' "${lines}" "${line}"; exec cat; } | exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" "${ARGS[@]}"
 else
   # TODO: ComponentTest: `printf '1\n2\n3' | smartless`
