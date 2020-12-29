@@ -79,6 +79,9 @@ SMARTLESS_PROMPT_PAGER=2
 
 # ... more in pager prompt color (set empty for no color)
 SMARTLESS_PROMPT_COLOR="\033[38;5;2m"
+
+# Redirect partial output to a different file descriptor (not in stderr)
+SMARTLESS_PARTIAL_OUTPUT_FD=2
 ```
 
 ## Contributing

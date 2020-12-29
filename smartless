@@ -65,6 +65,15 @@ fi
 # TODO: SMARTLESS_PROMPT_COLOR= bash -c 'git log' gives no color
 [ -z "${SMARTLESS_PROMPT_COLOR+x}" ] && SMARTLESS_PROMPT_COLOR="\033[38;5;2m"
 
+# Partial output FD
+# TODO: Test:
+# SMARTLESS_PARTIAL_OUTPUT_FD=2 bash -c 'git log' 2>/dev/null is empty
+# SMARTLESS_PARTIAL_OUTPUT_FD=1 bash -c 'git log' 2>/dev/null gives text
+case "${SMARTLESS_PARTIAL_OUTPUT_FD}" in
+  ''|*[!0-9]*) SMARTLESS_PARTIAL_OUTPUT_FD=2 ;;
+            *) :;;
+esac
+
 # if a file name is passed, read it
 isfile=0
 file=""
@@ -172,7 +181,7 @@ if IFS= read -r line; then
   {
     [ "${SMARTLESS_PROMPT_PAGER}" -ge 1 ] && printf '%s' "${lines}"
     [ "${SMARTLESS_PROMPT_PAGER}" -ge 2 ] && printf "%b... (more shown in %s)%b\n" "${SMARTLESS_PROMPT_COLOR}" "${SMARTLESS_PAGER}" "${SMARTLESS_PROMPT_COLOR:+\033[0m}"
-  } >&2
+  } >&"${SMARTLESS_PARTIAL_OUTPUT_FD}"
   { printf '%s%s\n' "${lines}" "${line}"; exec cat; } | exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" "${ARGS[@]}"
 else
   # TODO: ComponentTest: `printf '1\n2\n3' | smartless`
