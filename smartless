@@ -55,6 +55,15 @@ fi
 # the default arguments to the pager
 [ -z "${SMARTLESS_PAGER_ARGUMENTS}" ] && SMARTLESS_PAGER_ARGUMENTS='-iR'
 
+# Prompt text when switching to pager:
+# 0: no prompt
+# 1: prompt partial text only
+# 2: partial text + more... text
+[ -z "${SMARTLESS_PROMPT_PAGER}" ] && SMARTLESS_PROMPT_PAGER=2
+
+# Prompt highlighting of messages
+[ -z "${SMARTLESS_PROMPT_COLOR+x}" ] && SMARTLESS_PROMPT_COLOR="\033[38;5;2m"
+
 # if a file name is passed, read it
 isfile=0
 file=""
@@ -160,8 +169,8 @@ fi
 # if the input is longer, run the pager
 if IFS= read -r line; then
   {
-    printf '%s' "${lines}"
-    printf '\033[38;5;2m... (more shown in %s)\033[0m\n' "${SMARTLESS_PAGER}"
+    [ "${SMARTLESS_PROMPT_PAGER}" -ge 1 ] && printf '%s' "${lines}"
+    [ "${SMARTLESS_PROMPT_PAGER}" -ge 2 ] && printf '\033[38;5;2m... (more shown in %s)\033[0m\n' "${SMARTLESS_PAGER}"
   } >&2
   { printf '%s%s\n' "${lines}" "${line}"; exec cat; } | exec "${SMARTLESS_PAGER}" "${SMARTLESS_PAGER_ARGUMENTS}" "${ARGS[@]}"
 else

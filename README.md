@@ -70,6 +70,12 @@ SMARTLESS_PAGER='less'
 
 # the default arguments to the pager
 SMARTLESS_PAGER_ARGUMENTS='-iR'
+
+# Prompt text when switching to pager:
+# 0: no prompt
+# 1: prompt partial text only
+# 2: partial text + more... text
+SMARTLESS_PROMPT_PAGER=2
 ```
 
 ## Contributing
