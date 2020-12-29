@@ -61,6 +61,9 @@ Several optional environment variables control `smartless`.  These are described
 ```bash
 # number of lines to directly display before entering the pager
 SMARTLESS_NUM_LINES= # (terminal height - 5) or 15, if terminal height cannot be discovered automatically
+# '-H' (one of the few arguments that less does not accept) or
+# --hold-pollute (coming from -H) modifies this by
+# outputting to half the screen instead of filling it up
 
 # the pager to be used
 SMARTLESS_PAGER='less'
